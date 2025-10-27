@@ -1,8 +1,9 @@
 # Mật mã và An toàn thông tin
 
-## Nguyễn Đức Thành - 22021150
-## Cài đặt hệ mật RSA, ElGamal, ECC và sơ đồ chữ ký ECDSA
-## Số bit hiện tại 128
+## Thông tin
+#### Nguyễn Đức Thành - 22021150
+#### Cài đặt hệ mật RSA, ElGamal, ECC và sơ đồ chữ ký ECDSA
+#### Số bit hiện tại 128
 
 1) Tạo và kích hoạt virtual environment
 - Tạo venv:

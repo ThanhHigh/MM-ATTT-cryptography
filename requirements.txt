@@ -1,0 +1,5 @@
+pyasn1==0.6.1
+rsa==4.9.1
+pycryptodome==3.19.0
+ecdsa==0.18.0
+

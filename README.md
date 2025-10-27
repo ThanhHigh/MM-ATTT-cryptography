@@ -1,10 +1,8 @@
-# Hướng dẫn ngắn — Chạy ví dụ Crypto trên máy ảo Windows (cmd.exe)
+# Mật mã và An toàn thông tin
 
-Mục tiêu: thiết lập nhanh trong máy ảo Windows, cài & cập nhật phụ thuộc, và chạy ví dụ mẫu.
-
-Yêu cầu
-- Windows (trên máy ảo), Python 3.8+
-- Quy ước: làm việc trong thư mục dự án chứa README.md và requirements.txt
+## Nguyễn Đức Thành - 22021150
+## Cài đặt hệ mật RSA, ElGamal, ECC và sơ đồ chữ ký ECDSA
+## Số bit hiện tại 128
 
 1) Tạo và kích hoạt virtual environment
 - Tạo venv:

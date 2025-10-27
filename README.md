@@ -65,10 +65,3 @@ Cập nhật `requirements.txt`
     python -m pip install <ten-goi>
     python -m pip freeze > requirements.txt
 
-Ghi chú khác
-- Kho này chỉ chứa các script ví dụ. Đọc kỹ và kiểm thử trước khi dùng vào môi trường sản xuất.
-
-Bạn muốn mình:
-- Ghi đè `README.md` bằng bản dịch tiếng Việt này, hoặc
-- Giữ cả hai file (`README.md` và `README_VI.md`) và mình sẽ thêm 1 script ví dụ để tạo khóa RSA hợp lệ (ví dụ `rsa_generate_keys.py`)?
-# MM-ATTT-cryptography

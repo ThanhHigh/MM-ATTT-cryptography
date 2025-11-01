@@ -43,6 +43,71 @@ def elgamal_decrypt(privkey, c1: int, c2: int):
     return m
 
 
+def _egcd(a: int, b: int):
+    if b == 0:
+        return a, 1, 0
+    g, x1, y1 = _egcd(b, a % b)
+    return g, y1, x1 - (a // b) * y1
+
+
+def _modinv(a: int, m: int) -> int:
+    try:
+        return pow(a, -1, m)
+    except TypeError:
+        # older Python where pow(..., -1, mod) not supported
+        g, x, _ = _egcd(a, m)
+        if g != 1:
+            raise ValueError(f"No modular inverse for {a} mod {m}")
+        return x % m
+
+
+def elgamal_sign(privkey, message: bytes):
+    """Sign message (bytes) using ElGamal private key (x, p, g).
+
+    Returns (r, s).
+    """
+    p = int(privkey.p)
+    g = int(privkey.g)
+    x = int(privkey.x)
+
+    # Hash message to integer
+    import hashlib
+
+    h = hashlib.sha256(message).digest()
+    m = int.from_bytes(h, "big") % (p - 1)
+
+    # choose k with gcd(k, p-1) == 1
+    while True:
+        k = random.randrange(2, p - 1)
+        if _egcd(k, p - 1)[0] == 1:
+            break
+
+    r = pow(g, k, p)
+    k_inv = _modinv(k, p - 1)
+    s = (k_inv * (m - x * r)) % (p - 1)
+    return r, s
+
+
+def elgamal_verify(pubkey, message: bytes, signature) -> bool:
+    """Verify ElGamal signature (r, s) for message (bytes) using public key (p,g,y)."""
+    p = int(pubkey.p)
+    g = int(pubkey.g)
+    y = int(pubkey.y)
+
+    r, s = signature
+    if not (0 < r < p):
+        return False
+
+    import hashlib
+
+    h = hashlib.sha256(message).digest()
+    m = int.from_bytes(h, "big") % (p - 1)
+
+    v1 = (pow(y, r, p) * pow(r, s, p)) % p
+    v2 = pow(g, m, p)
+    return v1 == v2
+
+
 def main():
     base_dir = Path(__file__).parent
     try:
@@ -95,6 +160,22 @@ def main():
 
     except Exception as e:
         print(f"Lỗi khi giải mã: {e}")
+
+    # --- Signature demo using the same key components ---
+    try:
+        if private_key is None:
+            print("Không có private key: bỏ qua phần chữ ký.")
+        else:
+            sig_msg = b"Message for signing"
+            r, s = elgamal_sign(private_key, sig_msg)
+            print("\n--- Chữ ký ElGamal ---")
+            print(f"Thông điệp (bytes): {sig_msg}")
+            print(f"r = {r}")
+            print(f"s = {s}")
+            ok = elgamal_verify(public_key, sig_msg, (r, s))
+            print(f"Xác thực chữ ký thành công: {ok}")
+    except Exception as e:
+        print(f"Lỗi khi ký/kiểm tra chữ ký: {e}")
 
 
 if __name__ == "__main__":

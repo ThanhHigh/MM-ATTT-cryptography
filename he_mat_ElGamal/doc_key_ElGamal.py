@@ -1,6 +1,8 @@
 import json
 import base64
 from pathlib import Path
+from Crypto.PublicKey import ElGamal
+
 
 def load_pem_json(path: Path):
     text = path.read_text(encoding="utf-8")
@@ -24,6 +26,52 @@ def load_pem_json(path: Path):
         except Exception:
             data[k] = v
     return data
+
+def load_elgamal_private_key(base_dir: Path | None = None):
+    base = Path(base_dir) if base_dir is not None else Path(__file__).parent
+    pub_path = base / "public-key.pem"
+    priv_path = base / "private-key.pem"
+
+    if not pub_path.exists():
+        raise FileNotFoundError(f"Public key file not found: {pub_path}")
+
+    pub = load_pem_json(pub_path)
+    priv = None
+    if priv_path.exists():
+        priv = load_pem_json(priv_path)
+
+    p = pub["p"]
+    g = pub["g"]
+    y = pub["y"]
+
+    if priv is not None and "x" in priv:
+        x = priv["x"]
+        tup = (p, g, y, x)
+    else:
+        tup = (p, g, y)
+
+    return ElGamal.construct(tup)
+
+
+def load_elgamal_keypair(base_dir: Path | None = None):
+    base = Path(base_dir) if base_dir is not None else Path(__file__).parent
+    pub_path = base / "public-key.pem"
+    priv_path = base / "private-key.pem"
+
+    if not pub_path.exists():
+        raise FileNotFoundError(f"Public key file not found: {pub_path}")
+
+    pub = load_pem_json(pub_path)
+    public_key = ElGamal.construct((pub["p"], pub["g"], pub["y"]))
+
+    private_key = None
+    if priv_path.exists():
+        priv = load_pem_json(priv_path)
+        if "x" in priv:
+            private_key = ElGamal.construct((pub["p"], pub["g"], pub["y"], priv["x"]))
+
+    return private_key, public_key
+
 
 if __name__ == "__main__":
     base_dir = Path(__file__).parent

@@ -1,0 +1,257 @@
+
+================================================================================
+              SƠ ĐỒ CHỮ KÝ SỐ Ed25519 (EdDSA)
+          Edwards-curve Digital Signature Algorithm
+================================================================================
+Thời gian thực hiện: 2025-12-15 19:34:52
+Thuật toán: Ed25519 (EdDSA trên Curve25519)
+Hash function: SHA-512
+Độ dài khóa: 256 bits (32 bytes)
+Độ dài chữ ký: 512 bits (64 bytes)
+Mức bảo mật: 128 bits (tương đương RSA-3072)
+================================================================================
+
+
+[BƯỚC 1] ĐỌC KHÓA CÔNG KHAI VÀ KHÓA BÍ MẬT
+--------------------------------------------------------------------------------
+
+1.1. Đọc khóa bí mật từ file: private-key-ed25519.pem
+    ✓ Đọc thành công khóa bí mật
+    - Khóa bí mật (hex):
+      2fef531e589ff8e59a5747f48ced612721f2c5141261603fcfcc5001a0b8fc88
+    - Độ dài: 32 bytes (256 bits)
+
+1.2. Đọc khóa công khai từ file: public-key-ed25519.pem
+    ✓ Đọc thành công khóa công khai
+    - Khóa công khai (hex):
+      7b2ee47220575fca41d891aac5155b34ec61e2d37fe5188b0f6cc39f7dbd80b0
+    - Độ dài: 32 bytes (256 bits)
+
+[BƯỚC 2] CHUẨN BỊ THÔNG ĐIỆP CẦN KÝ
+--------------------------------------------------------------------------------
+
+2.1. Thông điệp gốc:
+    "bai tap so 10"
+    - Độ dài: 13 ký tự
+    - Độ dài (bytes): 13 bytes
+
+2.2. Thông điệp dạng hex:
+    6261692074617020736f203130
+
+2.3. Hash SHA-512 của thông điệp (để tham khảo):
+    969f9d2f612397fe05d020522127e504b1758ba9214236be679b4035a4c6f11a
+    756470c8d46fe0fe087a1590228fc20b5b6d6268ab86e15cd8e48e398d5caf2c
+    Độ dài: 64 bytes (512 bits)
+    Lưu ý: Ed25519 tự động hash nội bộ, không cần hash trước
+
+[BƯỚC 3] TẠO CHỮ KÝ SỐ (SIGNING PROCESS)
+--------------------------------------------------------------------------------
+
+3.1. Thuật toán Ed25519 Signing:
+    Ed25519 thực hiện các bước sau (tự động bên trong):
+    
+    Bước a) Tính hash SHA-512 của khóa bí mật:
+            h = SHA-512(private_key)
+            Lấy 32 bytes đầu làm scalar 's'
+            Lấy 32 bytes cuối làm 'prefix'
+
+    Bước b) Tính nonce 'r':
+            r = SHA-512(prefix || message)
+            Reduce r mod L (order của base point)
+
+    Bước c) Tính điểm R trên đường cong:
+            R = r * B (B là base point)
+            Encode R thành 32 bytes
+
+    Bước d) Tính 'k' (challenge):
+            k = SHA-512(R || A || message)
+            (A là public key point)
+            Reduce k mod L
+
+    Bước e) Tính 's' (scalar):
+            s = (r + k * a) mod L
+            (a là private scalar)
+
+    Bước f) Chữ ký cuối cùng:
+            Signature = R || s (64 bytes total)
+            32 bytes R + 32 bytes s
+
+3.2. Bắt đầu quá trình ký...
+    ✓ Ký thành công trong 0.8999 ms
+
+3.3. Chữ ký được tạo:
+    Chữ ký (hex - 64 bytes):
+    28b6a8e04b6ed9dd3267a571b15c4dfadcddf6be9059dac288e75f4e20537772
+    c1d5623676de2550c602cf771846ab224bb74a355b1d064d3dc1f0a35848fc06
+    Độ dài: 64 bytes (512 bits)
+
+3.4. Phân tích chữ ký:
+    - Phần R (32 bytes đầu):
+      28b6a8e04b6ed9dd3267a571b15c4dfadcddf6be9059dac288e75f4e20537772
+    - Phần s (32 bytes cuối):
+      c1d5623676de2550c602cf771846ab224bb74a355b1d064d3dc1f0a35848fc06
+
+[BƯỚC 4] XÁC THỰC CHỮ KÝ (VERIFICATION PROCESS)
+--------------------------------------------------------------------------------
+
+4.1. Thuật toán Ed25519 Verification:
+    Ed25519 thực hiện các bước xác thực:
+    
+    Bước a) Parse chữ ký thành R và s
+    Bước b) Kiểm tra s < L (order của base point)
+    Bước c) Decode R thành điểm trên đường cong
+    Bước d) Tính k = SHA-512(R || A || message) mod L
+    Bước e) Kiểm tra phương trình:
+            s * B = R + k * A
+            (Nếu đúng thì chữ ký hợp lệ)
+
+4.2. Bắt đầu quá trình xác thực...
+    ✓ Xác thực thành công trong 0.1337 ms
+
+4.3. Kết quả xác thực:
+    ✓ CHỮ KÝ HỢP LỆ!
+    ✓ Thông điệp chưa bị sửa đổi
+    ✓ Người ký được xác thực chính xác
+
+[BƯỚC 5] KIỂM TRA VỚI THÔNG ĐIỆP BỊ SỬA ĐỔI
+--------------------------------------------------------------------------------
+
+5.1. Thông điệp bị sửa đổi:
+    "bai tap so 10 [ĐÃ BỊ SỬA ĐỔI]"
+
+5.2. Hash SHA-512 của thông điệp sửa đổi:
+    6b581df723363eecd87e3da7862d32d9c44a30d15a26f0be88d92b6aef84cd26
+    28e93e01cab5796ff170c12f9ab692f99ab9bbb99d0e9e3ccc85aebeb34bedde
+
+5.3. So sánh hash:
+    Hash gốc:      969f9d2f612397fe05d020522127e504...
+    Hash sửa đổi:  6b581df723363eecd87e3da7862d32d9...
+    ➜ Hash khác nhau! ✓
+
+5.4. Xác thực chữ ký với thông điệp sửa đổi:
+    ✓ ĐÚNG: Xác thực thất bại (như mong đợi) - 0.5312 ms
+    ✓ Ed25519 phát hiện chính xác thông điệp đã bị sửa đổi
+
+[BƯỚC 6] KIỂM TRA VỚI CHỮ KÝ BỊ THAY ĐỔI
+--------------------------------------------------------------------------------
+
+6.1. Tạo chữ ký giả (sửa đổi 1 byte):
+    Chữ ký gốc (10 bytes đầu):  28b6a8e04b6ed9dd3267
+    Chữ ký giả (10 bytes đầu):  29b6a8e04b6ed9dd3267
+
+6.2. Xác thực chữ ký giả:
+    ✓ ĐÚNG: Xác thực thất bại (như mong đợi) - 0.2207 ms
+    ✓ Ed25519 phát hiện chữ ký không hợp lệ
+
+[BƯỚC 7] ĐÁNH GIÁ HIỆU NĂNG
+--------------------------------------------------------------------------------
+
+7.1. Thời gian thực hiện:
+    - Thời gian ký:        0.8999 ms
+    - Thời gian xác thực:  0.2207 ms
+
+7.2. Benchmark (1000 lần ký):
+    - Tổng thời gian: 0.0402 s
+    - Trung bình:     0.0402 ms/lần ký
+    - Tốc độ:         24871.72 chữ ký/giây
+
+7.3. Benchmark (1000 lần xác thực):
+    - Tổng thời gian: 0.0999 s
+    - Trung bình:     0.0999 ms/lần xác thực
+    - Tốc độ:         10010.00 xác thực/giây
+
+[BƯỚC 8] THÔNG TIN KỸ THUẬT VÀ BẢO MẬT
+--------------------------------------------------------------------------------
+
+8.1. Đặc điểm nổi bật của Ed25519:
+    ✓ Tốc độ: Nhanh nhất trong các thuật toán chữ ký số
+    ✓ Kích thước: Chữ ký chỉ 64 bytes (nhỏ gọn)
+    ✓ Deterministic: Cùng message + key → cùng signature
+    ✓ Side-channel resistant: Kháng tấn công kênh bên
+    ✓ Không cần RNG: Không phụ thuộc vào bộ sinh số ngẫu nhiên
+    ✓ Simple: Dễ triển khai đúng, khó triển khai sai
+
+8.2. So sánh với các thuật toán khác:
+    
+    Thuật toán    | Độ dài khóa | Chữ ký  | Tốc độ ký | Tốc độ verify
+    --------------|-------------|---------|-----------|---------------
+    Ed25519       | 32 bytes    | 64 B    | Rất nhanh | Rất nhanh
+    ECDSA P-256   | 32 bytes    | ~70 B   | Nhanh     | Nhanh
+    RSA-2048      | 256 bytes   | 256 B   | Chậm      | Nhanh
+    RSA-3072      | 384 bytes   | 384 B   | Rất chậm  | Nhanh
+
+8.3. Thông số kỹ thuật:
+    - Tên đường cong: Curve25519 (twisted Edwards form)
+    - Phương trình:   -x² + y² = 1 - (121665/121666)x²y²
+    - Prime field p:  2^255 - 19
+    - Group order L:  2^252 + 27742317777372353535851937790883648493
+    - Cofactor:       8
+    - Base point:     (x, 4/5)
+
+8.4. Mức độ bảo mật:
+    - Mức bảo mật:        128 bits
+    - Tương đương RSA:    3072 bits
+    - Tương đương AES:    AES-128
+    - Kháng quantum:      Không (như tất cả các hệ mật khóa công khai hiện nay)
+
+8.5. Ứng dụng thực tế:
+    - OpenSSH:            ssh-ed25519 (từ OpenSSH 6.5)
+    - GnuPG:              EdDSA keys
+    - Signal Protocol:    X3DH key agreement
+    - TLS 1.3:            ed25519 signature algorithm
+    - Cryptocurrencies:   Monero, Cardano, Stellar, Nano
+    - DNSSEC:             EdDSA signing
+    - Tor:                v3 onion addresses
+    - IPFS:               Identity keys
+
+8.6. Ưu điểm so với ECDSA:
+    ✓ Nhanh hơn (cả ký và xác thực)
+    ✓ Deterministic (không cần RNG tốt khi ký)
+    ✓ Đơn giản hơn (ít tham số, khó lỗi triển khai)
+    ✓ Kháng side-channel tốt hơn
+    ✓ Không có vấn đề 'k reuse' như ECDSA
+
+8.7. Lưu ý bảo mật quan trọng:
+    ⚠ LUÔN bảo vệ khóa bí mật cẩn thận
+    ⚠ KHÔNG bao giờ chia sẻ private key
+    ⚠ Sử dụng entropy tốt khi sinh khóa
+    ⚠ Backup khóa an toàn (mã hóa khi lưu trữ)
+    ⚠ Rotate khóa định kỳ trong production
+    ⚠ Không dùng lại khóa cho mục đích khác (separation)
+
+================================================================================
+                        TỔNG KẾT KẾT QUẢ
+================================================================================
+
+THÔNG TIN THÔNG ĐIỆP:
+  - Thông điệp:             13 ký tự (13 bytes)
+  - Hash SHA-512:           969f9d2f612397fe05d020522127e504...
+
+THÔNG TIN KHÓA:
+  - Thuật toán:             Ed25519 (EdDSA)
+  - Độ dài khóa bí mật:     32 bytes (256 bits)
+  - Độ dài khóa công khai:  32 bytes (256 bits)
+
+THÔNG TIN CHỮ KÝ:
+  - Độ dài chữ ký:          64 bytes (512 bits)
+  - Chữ ký (hex):           28b6a8e04b6ed9dd3267a571b15c4dfa...
+
+KẾT QUẢ XÁC THỰC:
+  ✓ Thông điệp gốc:         HỢP LỆ
+  ✓ Thông điệp sửa đổi:     THÀNH CÔNG (Phát hiện đúng)
+  ✓ Chữ ký giả:             THÀNH CÔNG (Phát hiện đúng)
+
+HIỆU NĂNG:
+  - Tốc độ ký:              10010 signatures/second
+  - Tốc độ xác thực:        10010 verifications/second
+
+BẢO MẬT:
+  - Mức bảo mật:            128 bits (tương đương RSA-3072)
+  - Đường cong:             Curve25519
+  - Hash function:          SHA-512
+
+✓ Chương trình hoàn thành thành công!
+✓ Kết quả đã được lưu vào: ../ket_qua/chu_ky_so_Ed25519.txt
+✓ Chữ ký số Ed25519 hoạt động hoàn hảo!
+================================================================================
+

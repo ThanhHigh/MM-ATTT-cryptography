@@ -2,7 +2,7 @@ pyasn1==0.6.1
 rsa==4.9.1
 pycryptodome==3.23.0
 ecdsa==0.18.0
-gmpy==2.2.2
 numba==0.63.1
 numpy==2.3.5
 llvmlite==0.46.0
+cryptography==41.0.4

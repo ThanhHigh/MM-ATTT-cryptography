@@ -1,0 +1,42 @@
+======================================================================
+KẾT QUẢ MÃ HÓA VÀ GIẢI MÃ SỬ DỤNG ECC (ECIES)
+======================================================================
+
+1. THÔNG TIN KHÓA
+----------------------------------------------------------------------
+Khóa riêng (d): 0x5c174cc51186fa2b9eb6ee0a38740aa88ca558d913661d8ccffc9bf4278abfba
+Khóa công khai (x): 0x90af0d433721728e43137fd794b35fcb67dc6ef02da1bf9d3bbd2cbd38794e99
+Khóa công khai (y): 0xb372f562d029b439685e3a268651419af1bcc6f84f10e19f80c254f2292808b9
+
+2. DỮ LIỆU
+----------------------------------------------------------------------
+Plaintext: Mid at midnight
+Độ dài plaintext: 15 bytes
+
+3. KẾT QUẢ MÃ HÓA
+----------------------------------------------------------------------
+Ciphertext (hex): 04d3313eefb1a028c788ba43414f43459b4b9cdd538f55756856751f9e0fd8d9737e91bf8794e6c8fe155f23a76433c45af57d37109a39942d6ed5a009ca1c319c0e0467eb1aeeb2fdfee6290927b6f428fa77d1f17800e12e3f69ddefb1307a481f1edfd7d728b8c616d9b11bc197ffd3f00d68cb1c8d9d72a35851ac1b8cc40cfa86e99d9efad6aa1da4ad2fe49182
+Độ dài ciphertext: 144 bytes
+
+4. KẾT QUẢ GIẢI MÃ
+----------------------------------------------------------------------
+Plaintext giải mã: Mid at midnight
+Kết quả khớp: True
+
+5. SƠ ĐỒ ECIES
+----------------------------------------------------------------------
+Mã hóa:
+  1. Tạo cặp khóa tạm thời (ephemeral key pair)
+  2. Tính shared secret = ephemeral_private × recipient_public
+  3. Sinh khóa AES và MAC từ shared secret (HKDF)
+  4. Mã hóa plaintext bằng AES-256-GCM
+  5. Tạo HMAC cho toàn bộ ciphertext
+  6. Kết hợp: ephemeral_public + nonce + ciphertext + tag + mac
+
+Giải mã:
+  1. Tách các thành phần từ ciphertext
+  2. Phục hồi ephemeral public key
+  3. Tính shared secret = recipient_private × ephemeral_public
+  4. Sinh khóa AES và MAC từ shared secret
+  5. Xác thực HMAC
+  6. Giải mã bằng AES-256-GCM

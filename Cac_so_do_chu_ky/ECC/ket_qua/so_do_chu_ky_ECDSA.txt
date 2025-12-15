@@ -1,0 +1,137 @@
+
+================================================================================
+        SƠ ĐỒ CHỮ KÝ SỐ TRÊN HỆ MẬT ECC (ECDSA)
+        Elliptic Curve Digital Signature Algorithm
+================================================================================
+Thời gian thực hiện: 2025-12-15 18:29:49
+Đường cong: P-256 (secp256r1)
+Thuật toán hash: SHA-256
+Thuật toán ký: ECDSA với chế độ 'fips-186-3'
+================================================================================
+
+
+[BƯỚC 1] ĐỌC KHÓA CÔNG KHAI VÀ KHÓA BÍ MẬT
+--------------------------------------------------------------------------------
+
+1.1. Đọc khóa bí mật từ file: private-key.pem
+    ✓ Đọc thành công khóa bí mật
+    - Đường cong: NIST P-256
+    - Khóa bí mật d (hex):
+      5c174cc51186fa2b9eb6ee0a38740aa88ca558d913661d8ccffc9bf4278abfba
+
+1.2. Đọc khóa công khai từ file: public-key.pem
+    ✓ Đọc thành công khóa công khai
+    - Điểm công khai Q(x, y):
+      Qx = 0x90af0d433721728e43137fd794b35fcb67dc6ef02da1bf9d3bbd2cbd38794e99
+      Qy = 0xb372f562d029b439685e3a268651419af1bcc6f84f10e19f80c254f2292808b9
+
+[BƯỚC 2] CHUẨN BỊ THÔNG ĐIỆP CẦN KÝ
+--------------------------------------------------------------------------------
+
+2.1. Thông điệp gốc:
+    "toi dep trai"
+    - Độ dài: 12 ký tự
+    - Độ dài (bytes): 12 bytes
+
+2.2. Thông điệp dạng hex:
+    746f69206465702074726169
+
+[BƯỚC 3] HASH THÔNG ĐIỆP (SHA-256)
+--------------------------------------------------------------------------------
+
+3.1. Tính hash SHA-256 của thông điệp:
+    Hash (hex): bea05841631043d04854025cca7e60547312a7ee84cdd98f81cf99e2a39e1d45
+    Độ dài hash: 32 bytes (256 bits)
+
+[BƯỚC 4] TẠO CHỮ KÝ SỐ (SIGNING)
+--------------------------------------------------------------------------------
+
+4.1. Khởi tạo DSS signer với chế độ 'fips-186-3':
+    - Sử dụng khóa bí mật để ký
+    - Chế độ: FIPS 186-3 (deterministic nonce)
+
+4.2. Thực hiện ký thông điệp:
+    Thuật toán ECDSA thực hiện các bước:
+    a) Sinh số ngẫu nhiên k (nonce)
+    b) Tính điểm R = k * G trên đường cong
+    c) Tính r = Rx mod n
+    d) Tính s = k^(-1) * (hash + d*r) mod n
+    e) Chữ ký = (r, s)
+
+4.3. Chữ ký được tạo thành công:
+    Chữ ký (hex):
+    c3a5f8d79d30c2b0da63c4b17481d763805b8b6f14f2897594617833852a0223
+    a68bdd0f22264236885592e1bdb4ed358660a0d8df9f105bf2875f9b9e144ae9
+    Độ dài chữ ký: 64 bytes
+
+4.4. Phân tích chữ ký (DER encoding):
+    Chữ ký ECDSA gồm 2 giá trị (r, s)
+    Được mã hóa theo chuẩn DER (Distinguished Encoding Rules)
+
+[BƯỚC 5] XÁC THỰC CHỮ KÝ (VERIFICATION)
+--------------------------------------------------------------------------------
+
+5.1. Khởi tạo DSS verifier với khóa công khai:
+    - Sử dụng khóa công khai để xác thực
+    - Chế độ: FIPS 186-3
+
+5.2. Thực hiện xác thực chữ ký:
+    Thuật toán ECDSA xác thực các bước:
+    a) Kiểm tra r, s có hợp lệ (0 < r, s < n)
+    b) Tính w = s^(-1) mod n
+    c) Tính u1 = hash * w mod n
+    d) Tính u2 = r * w mod n
+    e) Tính điểm P = u1*G + u2*Q
+    f) Kiểm tra r == Px mod n
+
+    ✓ XÁC THỰC THÀNH CÔNG!
+    Chữ ký hợp lệ - Thông điệp chưa bị sửa đổi
+
+[BƯỚC 6] KIỂM TRA VỚI THÔNG ĐIỆP BỊ SỬA ĐỔI
+--------------------------------------------------------------------------------
+
+6.1. Thông điệp bị sửa đổi:
+    "toi dep trai [MODIFIED]"
+
+6.2. Hash của thông điệp sửa đổi:
+    b896259455c9b224de0b62696e50072c368f77fc77c505cde5d08772737d77a1
+
+6.3. Xác thực chữ ký với thông điệp sửa đổi:
+    ✓ ĐÚNG: Xác thực thất bại (như mong đợi)
+    Chữ ký phát hiện được thông điệp đã bị sửa đổi
+
+[BƯỚC 7] THÔNG TIN VỀ BẢO MẬT
+--------------------------------------------------------------------------------
+
+7.1. Độ an toàn của hệ mật ECC P-256:
+    - Độ dài khóa: 256 bits
+    - Tương đương RSA: ~3072 bits
+    - Mức bảo mật: 128 bits (rất cao)
+
+7.2. Ưu điểm của ECDSA:
+    ✓ Khóa ngắn hơn RSA nhưng cùng mức bảo mật
+    ✓ Tốc độ ký và xác thực nhanh
+    ✓ Tiết kiệm băng thông và bộ nhớ
+    ✓ Phù hợp cho thiết bị di động và IoT
+
+7.3. Ứng dụng thực tế:
+    - Bitcoin và Cryptocurrency (ECDSA secp256k1)
+    - TLS/SSL certificates
+    - Apple iMessage
+    - SSH keys
+    - Digital certificates
+
+================================================================================
+                            TỔNG KẾT KẾT QUẢ
+================================================================================
+Thông điệp gốc:         12 ký tự
+Hash SHA-256:           bea05841631043d04854025cca7e60547312a7ee84cdd98f81cf99e2a39e1d45
+Độ dài chữ ký:          64 bytes
+Trạng thái xác thực:    HỢP LỆ
+Đường cong ECC:         P-256 (secp256r1)
+Mức bảo mật:            128 bits
+
+✓ Chương trình hoàn thành thành công!
+✓ Kết quả đã được lưu vào: ../ket_qua/so_do_chu_ky_he_mat_ECC.txt
+================================================================================
+

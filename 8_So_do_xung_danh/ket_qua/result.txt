@@ -1,0 +1,93 @@
+================================================================================
+SƠ ĐỒ XƯNG DANH ECC (ECC AUTHENTICATION SCHEME)
+Giao thức Schnorr trên đường cong Elliptic Curve
+================================================================================
+
+BƯỚC KHỞI TẠO
+--------------------------------------------------------------------------------
+Đường cong: NIST P-256
+Order của nhóm (n): 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551
+Khóa bí mật (d): 0x5c174cc51186fa2b9eb6ee0a38740aa88ca558d913661d8ccffc9bf4278abfba
+Khóa công khai (Q): (0x90af0d433721728e43137fd794b35fcb67dc6ef02da1bf9d3bbd2cbd38794e99, 0xb372f562d029b439685e3a268651419af1bcc6f84f10e19f80c254f2292808b9)
+
+GIAO THỨC XƯNG DANH (3 BƯỚC)
+================================================================================
+
+BƯỚC 1: PROVER TẠO COMMITMENT
+--------------------------------------------------------------------------------
+Prover chọn ngẫu nhiên r: 0xbe2044338b3c86145509ea4967fe36d664c7a5628433b36b9afe8216aee63fd
+Prover tính R = r*G: (0x591e5f77202d8722ad5faf294dc8c5786ceef649bba48aa46caf16276dede09f, 0x5918247c5d44d7b65d0cf27b717823960e4a775d1c6504eae3324ccb7053f95b)
+Prover gửi R cho Verifier
+
+BƯỚC 2: VERIFIER TẠO CHALLENGE
+--------------------------------------------------------------------------------
+Verifier nhận R: (0x591e5f77202d8722ad5faf294dc8c5786ceef649bba48aa46caf16276dede09f, 0x5918247c5d44d7b65d0cf27b717823960e4a775d1c6504eae3324ccb7053f95b)
+Verifier tạo challenge c: 0x7545b43a818e3f5b21151ba631dce874d0ae2a328560b8995b72663b489c4b3e
+Verifier gửi c cho Prover
+
+BƯỚC 3: PROVER TẠO RESPONSE
+--------------------------------------------------------------------------------
+Prover nhận challenge c: 0x7545b43a818e3f5b21151ba631dce874d0ae2a328560b8995b72663b489c4b3e
+Prover tính s = (r + c*d) mod n: 0x1f15f80b9551736acaf97251336b5fcd2f8cb6604f8495e3778054fe2e19922d
+Prover gửi s cho Verifier
+
+BƯỚC 4: VERIFIER KIỂM TRA
+--------------------------------------------------------------------------------
+Verifier nhận s: 0x1f15f80b9551736acaf97251336b5fcd2f8cb6604f8495e3778054fe2e19922d
+Verifier kiểm tra phương trình: s*G == R + c*Q
+
+Chi tiết tính toán:
+  Vế trái (s*G): (0xfea556fcbea683f1e60e9c1e24fa2253ac4f7add3bee19fbb5753fbf88818b25, 0x9d3bb60eb3dd805f20a819fc876631ee1455fde2185cd5108e14848c7a81ff2b)
+  Vế phải (R + c*Q): (0x1d164e4eecceaf7ca2bc506a314bc4e6a7e6a83bf2d936f7f19879cfaabddc9, 0xa320ac2c9591e7ac66dd31b106e0c8d4e466fc2f7cf9fc5c6ae84bf977a305a9)
+
+================================================================================
+✗ KẾT QUẢ: XÁC THỰC THẤT BẠI!
+Prover không chứng minh được danh tính.
+================================================================================
+
+PHÂN TÍCH BẢO MẬT
+--------------------------------------------------------------------------------
+1. Tính đúng đắn (Completeness):
+   - Nếu Prover biết d, luôn xác thực thành công
+   - Chứng minh: s*G = (r + c*d)*G = r*G + c*d*G = R + c*Q ✓
+
+2. Tính an toàn (Soundness):
+   - Nếu Prover không biết d, xác suất lừa Verifier rất nhỏ (1/n)
+   - Prover phải đoán đúng challenge c trước khi nhận được
+
+3. Tính zero-knowledge:
+   - Verifier không học được thông tin về khóa bí mật d
+   - Chỉ biết s = r + c*d, nhưng không thể tính d từ đó
+
+4. Độ an toàn:
+   - Dựa trên bài toán logarit rời rạc trên đường cong elliptic (ECDLP)
+   - Độ dài khóa: 256 bits
+   - Độ phức tạp tấn công: O(√n) ≈ 2^128 operations
+
+THỐNG KÊ HIỆU NĂNG
+--------------------------------------------------------------------------------
+Thời gian thực thi: 0.040096 giây
+Số lần nhân điểm ECC: 4 (R, c*Q, s*G, R+c*Q)
+Kích thước thông tin truyền:
+  - Commitment R: 64 bytes
+  - Challenge c: 32 bytes
+  - Response s: 32 bytes
+  - Tổng: 128 bytes
+
+SO SÁNH VỚI CÁC SƠ ĐỒ XƯNG DANH KHÁC
+--------------------------------------------------------------------------------
+1. RSA-based authentication:
+   - Ưu điểm ECC: Khóa ngắn hơn (256-bit ECC ~ 3072-bit RSA)
+   - Ưu điểm ECC: Nhanh hơn trong phép toán
+
+2. Password-based authentication:
+   - Ưu điểm ECC: Không cần lưu trữ mật khẩu
+   - Ưu điểm ECC: Không sợ tấn công từ điển
+
+3. Certificate-based (PKI):
+   - Ưu điểm ECC: Không cần cơ sở hạ tầng phức tạp
+   - Nhược điểm: Cần tương tác nhiều bước
+
+================================================================================
+HOÀN THÀNH CHƯƠNG TRÌNH SƠ ĐỒ XƯNG DANH ECC
+================================================================================

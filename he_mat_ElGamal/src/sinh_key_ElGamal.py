@@ -5,7 +5,7 @@ import base64
 from textwrap import wrap
 
 
-KEY_LENGTH = 256
+KEY_LENGTH = 1024
 
 key = ElGamal.generate(KEY_LENGTH, None)
 

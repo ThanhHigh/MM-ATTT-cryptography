@@ -57,7 +57,7 @@ def giai_ma(ban_ma, private_key):
 if __name__ == '__main__':
     message = b'Meet at midnight'
     print("==============================================")
-    print(f"Hệ mật RSA cơ bản - Kích thước khóa: 1024 bits")
+    print(f"Hệ mật RSA cơ bản - Kích thước khóa: 4096 bits")
     print(f"Thông điệp gốc: {message}")
     print("==============================================")
     

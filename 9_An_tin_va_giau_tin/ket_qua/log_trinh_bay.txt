@@ -1,0 +1,72 @@
+
+======================================================================
+CHƯƠNG TRÌNH ẨN TIN VÀ DẤU TIN (STEGANOGRAPHY)
+Kỹ thuật: Least Significant Bit (LSB) Embedding
+======================================================================
+Thời gian chạy: 2025-12-15 19:27:44
+Thư mục làm việc: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\src
+
+[CHUẨN BỊ] Ảnh gốc: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\src\anh_goc.png
+
+======================================================================
+BƯỚC 1: TRIỂN KHAI ẨN TIN (ENCODING) - LSB STEGANOGRAPHY
+======================================================================
+
+[BƯỚC 1.1] THÔNG TIN ẢNH GỐC:
+  • Đường dẫn: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\src\anh_goc.png
+  • Kích thước: 1024 × 1024 = 1048576 pixels
+  • Dung lượng (RGB): 3145728 bits
+
+[BƯỚC 1.2] THÔNG TIN TIN NHẮN:
+  • Tin nhắn gốc: 'Chương trình mã hóa này được viết bởi chuyên viên Crypto. Hiệu năng được tối ưu bằng Numpy. Tuyệt mật!'
+  • Độ dài ký tự: 102 ký tự
+  • Độ dài bytes (UTF-8): 134 bytes
+  • Chuỗi bit (kèm Stop Flag): 1088 bits
+  • Stop Flag: '1111111100000000' (16 bits)
+
+[BƯỚC 1.3] KIỂM TRA DUNG LƯỢNG:
+  • Dung lượng cần: 1088 bits
+  • Dung lượng tối đa: 3145728 bits
+  • Tỉ lệ: 0.03% ✓ CÓ ĐỦ DUNG LƯỢNG
+
+[BƯỚC 1.4] TRIỂN KHAI ẨN TIN (LSB EMBEDDING)...
+  • Đã ẩn thành công 1088/1088 bits
+
+[BƯỚC 1.5] LƯU ẢNH ĐÃ ẨN TIN:
+  • Đường dẫn: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\ket_qua\anh_da_ma_hoa.png
+  • Kích thước file: 1254189 bytes
+✅ THÀNH CÔNG: Đã ẩn tin vào ảnh!
+
+======================================================================
+BƯỚC 2: TRIỂN KHAI DẤU TIN (DECODING) - LSB EXTRACTION
+======================================================================
+
+[BƯỚC 2.1] THÔNG TIN ẢNH ĐÃ ẨN TIN:
+  • Đường dẫn: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\ket_qua\anh_da_ma_hoa.png
+  • Kích thước: 1024 × 1024 = 1048576 pixels
+  • Dung lượng (RGB): 3145728 bits
+
+[BƯỚC 2.2] TRÍCH XUẤT TIN (LSB EXTRACTION)...
+  • Stop Flag tìm thấy! Dừng trích xuất.
+  • Tổng bits trích xuất (kèm Stop Flag): 1088 bits
+  • Bits tin nhắn: 1072 bits
+
+[BƯỚC 2.3] CHUYỂN ĐỔI CỬ STRING → VĂN BẢN:
+  • Độ dài tin nhắn: 102 ký tự
+  • Tin nhắn trích xuất: 'Chương trình mã hóa này được viết bởi chuyên viên Crypto. Hiệu năng được tối ưu bằng Numpy. Tuyệt mật!'
+
+[BƯỚC 2.4] LƯU KẾT QUẢ:
+  • Đường dẫn: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\ket_qua\tin_giai_ma.txt
+  • Kích thước file: 134 bytes
+✅ THÀNH CÔNG: Đã trích xuất tin nhắn!
+
+======================================================================
+✅ HOÀN THÀNH THÀNH CÔNG!
+======================================================================
+
+Thời gian kết thúc: 2025-12-15 19:27:45
+
+📁 CÁC FILE KẾT QUẢ:
+  • Ảnh ẩn tin: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\ket_qua\anh_da_ma_hoa.png
+  • Tin giai mã: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\ket_qua\tin_giai_ma.txt
+  • Log chi tiết: D:\Thanh\Areas\Learning\Script\Python\Crypto\9_An_tin_va_giau_tin\ket_qua\log_trinh_bay.txt

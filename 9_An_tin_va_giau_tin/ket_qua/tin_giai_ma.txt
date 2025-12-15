@@ -1,0 +1,1 @@
+Chương trình mã hóa này được viết bởi chuyên viên Crypto. Hiệu năng được tối ưu bằng Numpy. Tuyệt mật!
